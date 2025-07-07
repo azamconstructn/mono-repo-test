@@ -1,0 +1,68 @@
+import mongoose from "mongoose";
+import logger from "@t3d/core-utils/logger";
+
+let isConnected = false;
+
+export const connectDB = async (): Promise<void> => {
+  if (isConnected) {
+    logger.info("Database already connected");
+    return;
+  }
+
+  try {
+    const mongoURI =
+      process.env.MONGODB_URI || "mongodb://localhost:27017/t3d_api";
+
+    await mongoose.connect(mongoURI, {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+    });
+
+    isConnected = true;
+    logger.info("MongoDB connected successfully");
+
+    // Handle connection events
+    mongoose.connection.on("error", (err) => {
+      logger.error("MongoDB connection error:", err);
+      isConnected = false;
+    });
+
+    mongoose.connection.on("disconnected", () => {
+      logger.warn("MongoDB disconnected");
+      isConnected = false;
+    });
+
+    mongoose.connection.on("reconnected", () => {
+      logger.info("MongoDB reconnected");
+      isConnected = true;
+    });
+  } catch (error) {
+    logger.error("Failed to connect to MongoDB:", error);
+    throw error;
+  }
+};
+
+export const disconnectDB = async (): Promise<void> => {
+  if (!isConnected) {
+    return;
+  }
+
+  try {
+    await mongoose.disconnect();
+    isConnected = false;
+    logger.info("MongoDB disconnected");
+  } catch (error) {
+    logger.error("Error disconnecting from MongoDB:", error);
+    throw error;
+  }
+};
+
+export const getConnectionStatus = (): boolean => {
+  return isConnected;
+};
+
+export const getConnection = () => {
+  return mongoose.connection;
+};
