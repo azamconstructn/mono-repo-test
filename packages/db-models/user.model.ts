@@ -1,221 +1,198 @@
-import mongoose, { Document, Schema } from "mongoose";
+import { Document, Schema, model, Query, SchemaTypes } from "mongoose";
 import bcrypt from "bcryptjs";
+import { Contact, ContactSchema, Address, AddressSchema } from "./address";
+import { Company, CompanyModel } from "./company";
 
-export interface IUser extends Document {
-  email: string;
-  password: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  avatar?: string;
-  phone?: string;
-  dateOfBirth?: Date;
-  isActive: boolean;
-  isEmailVerified: boolean;
-  emailVerificationToken?: string;
-  emailVerificationExpires?: Date;
-  passwordResetToken?: string;
-  passwordResetExpires?: Date;
-  lastLogin?: Date;
-  loginAttempts: number;
-  lockUntil?: Date;
-  roles: string[];
-  preferences: {
-    language: string;
-    timezone: string;
-    notifications: {
-      email: boolean;
-      push: boolean;
-      sms: boolean;
-    };
-  };
-  comparePassword(candidatePassword: string): Promise<boolean>;
-  isLocked(): boolean;
-  incrementLoginAttempts(): Promise<void>;
-  resetLoginAttempts(): Promise<void>;
+export enum loginType {
+  constructn = "constructn-oauth",
+  procore = "procore-oauth",
+  autodesk = "autodesk-oauth",
+  microsoft = "microsoft-oauth",
 }
 
-const userSchema = new Schema<IUser>(
+export const salt: number = 12;
+
+export interface User extends Document {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  loginType: loginType;
+  // contact?: Contact;
+  // gender?: "Male" | "Female" | "Transgender";
+  // dob?: Date;
+  // address?: Address;
+  // avatar?: string;
+  verified: boolean;
+  isSupportUser: boolean;
+  // verificationTimestamps: Date[];
+  // resetPasswordTimestamps: Date[];
+  // userPreference?: string;
+  // timezone: string;
+  status: "active" | "inActive";
+  // unReadNotifications: number;
+  // metadata?: object;
+  // jobTitle: string;
+  // company?: Company | null;
+  comparePassword(candidatePassword: string): boolean;
+  // fullName?: string;
+  // canResendVerification?: boolean;
+  // canResetPassword?: boolean;
+  // age?: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const UserSchema = new Schema<User>(
   {
-    email: {
+    _id: SchemaTypes.String,
+    firstName: { type: String, required: true },
+    lastName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    // userPreference: {
+    //   type: Schema.Types.String,
+    //   ref: "UserPreference",
+    //   required: false,
+    // },
+    // timezone: { type: String },
+    status: {
       type: String,
+      enum: ["active", "inActive"],
+      default: "active",
+    },
+    isSupportUser: {
+      type: Boolean,
       required: true,
-      unique: true,
-      lowercase: true,
-      trim: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please enter a valid email",
-      ],
+      default: false,
+    },
+    // jobTitle: { type: String },
+    // unReadNotifications: { type: Number, default: 0 },
+    loginType: {
+      type: String,
+      enum: Object.values(loginType),
+      required: true,
+      default: loginType.constructn,
     },
     password: {
       type: String,
       required: true,
-      minlength: [6, "Password must be at least 6 characters long"],
+      set: (plaintextPassword: string) => bcrypt.hashSync(plaintextPassword, salt),
     },
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: [50, "First name cannot exceed 50 characters"],
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: [50, "Last name cannot exceed 50 characters"],
-    },
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      minlength: [3, "Username must be at least 3 characters long"],
-      maxlength: [30, "Username cannot exceed 30 characters"],
-      match: [
-        /^[a-zA-Z0-9_]+$/,
-        "Username can only contain letters, numbers, and underscores",
-      ],
-    },
-    avatar: {
-      type: String,
-      default: null,
-    },
-    phone: {
-      type: String,
-      match: [/^\+?[\d\s-()]+$/, "Please enter a valid phone number"],
-    },
-    dateOfBirth: {
-      type: Date,
-    },
-    isActive: {
+    // contact: ContactSchema,
+    // verificationTimestamps: { type: [Date], default: [] },
+    // resetPasswordTimestamps: { type: [Date], default: [] },
+    // gender: {
+    //   type: String,
+    //   enum: ["Male", "Female", "Transgender"],
+    // },
+    // dob: Date,
+    // address: AddressSchema,
+    // avatar: String,
+    verified: {
       type: Boolean,
-      default: true,
-    },
-    isEmailVerified: {
-      type: Boolean,
+      required: true,
       default: false,
     },
-    emailVerificationToken: String,
-    emailVerificationExpires: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
-    lastLogin: Date,
-    loginAttempts: {
-      type: Number,
-      default: 0,
-    },
-    lockUntil: Date,
-    roles: {
-      type: [String],
-      default: ["user"],
-      enum: ["user", "admin", "moderator"],
-    },
-    preferences: {
-      language: {
-        type: String,
-        default: "en",
-      },
-      timezone: {
-        type: String,
-        default: "UTC",
-      },
-      notifications: {
-        email: {
-          type: Boolean,
-          default: true,
-        },
-        push: {
-          type: Boolean,
-          default: true,
-        },
-        sms: {
-          type: Boolean,
-          default: false,
-        },
-      },
-    },
+    // metadata: { type: Object },
   },
   {
     timestamps: true,
-    toJSON: {
-      transform: function (doc, ret) {
-        delete ret.password;
-        delete ret.emailVerificationToken;
-        delete ret.emailVerificationExpires;
-        delete ret.passwordResetToken;
-        delete ret.passwordResetExpires;
-        delete ret.loginAttempts;
-        delete ret.lockUntil;
-        return ret;
-      },
-    },
-  },
+    toJSON: { getters: true, virtuals: true },
+    toObject: { getters: true, virtuals: true },
+    id: false,
+  }
 );
 
-// Indexes
-userSchema.index({ email: 1 });
-userSchema.index({ username: 1 });
-userSchema.index({ "preferences.language": 1 });
-userSchema.index({ createdAt: -1 });
-
-// Virtual for full name
-userSchema.virtual("fullName").get(function () {
+UserSchema.virtual("fullName").get(function (this: User) {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Pre-save middleware to hash password
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error as Error);
+UserSchema.virtual("age").get(function (this: User) {
+  if (this.dob) {
+    const today = new Date();
+    const birthDate = new Date(this.dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
   }
 });
 
-// Instance method to compare password
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string,
-): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
+UserSchema.virtual("canResendVerification").get(function (this: User) {
+  const now: number = new Date().getTime();
+  const twoHoursAgo: Date = new Date(now - 2 * 60 * 60 * 1000);
+  if (this.verificationTimestamps?.length > 0) {
+    return (
+      this.verificationTimestamps.filter(
+        (timestamp) => timestamp.getTime() > twoHoursAgo.getTime()
+      ).length < 3
+    );
+  } else return true;
+});
+
+UserSchema.virtual("canResetPassword").get(function (this: User) {
+  const now: number = new Date().getTime();
+  const twentyFourHoursAgo: Date = new Date(now - 24 * 60 * 60 * 1000);
+  if (this.resetPasswordTimestamps?.length > 0) {
+    return (
+      this.resetPasswordTimestamps.filter(
+        (timestamp) => timestamp.getTime() > twentyFourHoursAgo.getTime()
+      ).length < 3
+    );
+  } else return true;
+});
+
+UserSchema.methods.comparePassword = function (password: string): boolean {
+  return bcrypt.compareSync(password, this.password);
 };
 
-// Instance method to check if account is locked
-userSchema.methods.isLocked = function (): boolean {
-  return !!(this.lockUntil && this.lockUntil > new Date());
-};
+UserSchema.pre<User>("save", async function (next) {
+  const now = String(Date.now());
+  const middlePos = Math.ceil(now.length / 2);
+  let prefix = "USR";
+  if (!this._id) this._id = `${prefix}${now.substring(middlePos)}`;
+  next();
+});
 
-// Instance method to increment login attempts
-userSchema.methods.incrementLoginAttempts = async function (): Promise<void> {
-  // If we have a previous lock that has expired, restart at 1
-  if (this.lockUntil && this.lockUntil < new Date()) {
-    return this.updateOne({
-      $unset: { lockUntil: 1 },
-      $set: { loginAttempts: 1 },
-    });
+UserSchema.pre<Query<User, User>>(
+  /^(updateOne|findOneAndUpdate)/,
+  async function () {
+    this.select("-password");
   }
+);
 
-  const updates: Record<string, unknown> = { $inc: { loginAttempts: 1 } };
-  // Lock account after 5 failed attempts
-  if (this.loginAttempts + 1 >= 5 && !this.isLocked()) {
-    (updates as Record<string, unknown>).$set = {
-      lockUntil: new Date(Date.now() + 2 * 60 * 60 * 1000),
-    }; // 2 hours
+UserSchema.post(
+  /^(find|findOne|updateOne|findOneAndUpdate)/,
+  async (doc: User | User[]) => {
+    if (!doc) return;
+    await populateCompany(doc);
   }
+);
 
-  return this.updateOne(updates);
-};
+async function populateCompany(doc: User | User[]) {
+  if (Array.isArray(doc)) {
+    await Promise.all(
+      doc.map(async (user) => {
+        if (!user?.email) {
+          let userDetails = await UserModel.findOne({ _id: user._id });
+          if (userDetails) user = userDetails;
+        }
+        const emailDomain = user.email.split("@")[1];
+        const company = await CompanyModel.findOne({ domain: emailDomain });
+        (user as User).company = company;
+      })
+    );
+  } else {
+    if (!doc?.email) {
+      let userDetails = await UserModel.findOne({ _id: doc._id });
+      if (userDetails) doc = userDetails;
+    }
+    const emailDomain = doc.email.split("@")[1];
+    const company: Company | null = await CompanyModel.findOne({ domain: emailDomain });
+    (doc as User).company = company;
+  }
+}
 
-// Instance method to reset login attempts
-userSchema.methods.resetLoginAttempts = async function (): Promise<void> {
-  return this.updateOne({
-    $unset: { loginAttempts: 1, lockUntil: 1 },
-    $set: { lastLogin: new Date() },
-  });
-};
-
-export const User = mongoose.model<IUser>("User", userSchema);
+export const UserModel = model<User>("User", UserSchema);

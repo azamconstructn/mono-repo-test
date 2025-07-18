@@ -4,6 +4,9 @@ import {
   loginSchema,
   registerSchema,
   refreshTokenSchema,
+  RegisterDto,
+  LoginDto,
+  RefreshTokenDto,
 } from "../validation";
 import { asyncHandler } from "@t3d/core-utils";
 import * as authService from "../services/auth.service";
@@ -15,7 +18,7 @@ router.post(
   "/register",
   validateAuthRequest(registerSchema),
   asyncHandler(async (req, res) => {
-    const result = await authService.register(req.validatedData);
+    const result = await authService.register(req.validatedData as RegisterDto);
     res.status(201).json({
       success: true,
       data: result,
@@ -28,7 +31,7 @@ router.post(
   "/login",
   validateAuthRequest(loginSchema),
   asyncHandler(async (req, res) => {
-    const result = await authService.login(req.validatedData);
+    const result = await authService.login(req.validatedData as LoginDto);
     res.status(200).json({
       success: true,
       data: result,
@@ -42,7 +45,7 @@ router.post(
   validateAuthRequest(refreshTokenSchema),
   asyncHandler(async (req, res) => {
     const result = await authService.refreshToken(
-      req.validatedData.refreshToken
+      (req.validatedData as RefreshTokenDto).refreshToken
     );
     res.status(200).json({
       success: true,
@@ -56,7 +59,7 @@ router.post(
   "/logout",
   validateAuthRequest(refreshTokenSchema),
   asyncHandler(async (req, res) => {
-    await authService.logout(req.validatedData.refreshToken);
+    await authService.logout((req.validatedData as RefreshTokenDto).refreshToken);
     res.status(200).json({
       success: true,
       message: "Logged out successfully",
