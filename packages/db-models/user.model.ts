@@ -31,7 +31,7 @@ export interface User extends Document {
   // timezone: string;
   status: "active" | "inActive";
   // unReadNotifications: number;
-  metadata?: object;
+  // metadata?: object;
   // jobTitle: string;
   // company?: Company | null;
   comparePassword(candidatePassword: string): boolean;
@@ -49,12 +49,12 @@ const UserSchema = new Schema<User>(
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    userPreference: {
-      type: Schema.Types.String,
-      ref: "UserPreference",
-      required: false,
-    },
-    timezone: { type: String },
+    // userPreference: {
+    //   type: Schema.Types.String,
+    //   ref: "UserPreference",
+    //   required: false,
+    // },
+    // timezone: { type: String },
     status: {
       type: String,
       enum: ["active", "inActive"],
@@ -65,8 +65,8 @@ const UserSchema = new Schema<User>(
       required: true,
       default: false,
     },
-    jobTitle: { type: String },
-    unReadNotifications: { type: Number, default: 0 },
+    // jobTitle: { type: String },
+    // unReadNotifications: { type: Number, default: 0 },
     loginType: {
       type: String,
       enum: Object.values(loginType),
@@ -78,22 +78,22 @@ const UserSchema = new Schema<User>(
       required: true,
       set: (plaintextPassword: string) => bcrypt.hashSync(plaintextPassword, salt),
     },
-    contact: ContactSchema,
-    verificationTimestamps: { type: [Date], default: [] },
-    resetPasswordTimestamps: { type: [Date], default: [] },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Transgender"],
-    },
-    dob: Date,
-    address: AddressSchema,
-    avatar: String,
+    // contact: ContactSchema,
+    // verificationTimestamps: { type: [Date], default: [] },
+    // resetPasswordTimestamps: { type: [Date], default: [] },
+    // gender: {
+    //   type: String,
+    //   enum: ["Male", "Female", "Transgender"],
+    // },
+    // dob: Date,
+    // address: AddressSchema,
+    // avatar: String,
     verified: {
       type: Boolean,
       required: true,
       default: false,
     },
-    metadata: { type: Object },
+    // metadata: { type: Object },
   },
   {
     timestamps: true,
