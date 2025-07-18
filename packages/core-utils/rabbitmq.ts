@@ -159,3 +159,21 @@ export const initRabbitMQ = async (url?: string): Promise<RabbitMQClient> => {
   await rabbitMQClient.connect();
   return rabbitMQClient;
 };
+/**
+ * Publishes a message to the specified queue using the global RabbitMQ client.
+ * Automatically initializes the connection if not already connected.
+ * @param queueName The name of the queue to publish to.
+ * @param msg The message to publish.
+ * @returns Promise<boolean> indicating if the message was published.
+ */
+export const publishToQueue = async (
+  queueName: string,
+  msg: unknown,
+): Promise<boolean> => {
+  const client = getRabbitMQClient();
+  if (!client.isConnected()) {
+    await client.connect();
+  }
+  await client.createQueue(queueName);
+  return client.publishMessage(queueName, msg);
+};

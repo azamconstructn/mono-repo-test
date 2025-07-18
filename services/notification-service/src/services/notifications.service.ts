@@ -9,3 +9,11 @@ export const createNotifications = async (data: CreateNotificationsDto) => {
 export const getNotificationsById = async (id: string) => {
   return NotificationsModel.findById(id);
 };
+
+export const userRegistered = async () => {
+  console.log("User registered event received");
+}
+
+export const sendWelcomeEmail = async ({email}: {email: string}) => {
+  console.log(`Sending welcome email to ${email}`);
+}

@@ -6,6 +6,7 @@ import {
   AuthenticationError,
   ConflictError,
   NotFoundError,
+  publishToQueue,
 } from "@t3d/core-utils";
 
 const JWT_SECRET =
@@ -53,6 +54,18 @@ export const register = async (
 
   // Save refresh token
   await saveRefreshToken(user.id, refreshToken);
+
+  publishToQueue("notifications", {
+    type: "USER_REGISTERED",
+    request: {}
+  });
+
+  publishToQueue("notifications", {
+    type: "SEND_WELCOME_EMAIL",
+    request: {
+      email: user.email
+    }
+  });
 
   return {
     user: {

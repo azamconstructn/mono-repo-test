@@ -16,6 +16,8 @@ import {
 // Import routes
 import notificationsRoutes from "./routes/notifications.route";
 
+import { listenToQueueEvents } from "./services/listenQueue.service";
+
 const app = express();
 const PORT = process.env.PORT || 3002;
 
@@ -64,29 +66,7 @@ app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
 
-  // --- RabbitMQ Usage Example ---
-  // This demonstrates connecting, creating a queue, and consuming messages
-  // You can move this to a dedicated worker or service as needed
-  (async () => {
-    try {
-      const { initRabbitMQ } = await import("@t3d/core-utils");
-      const rabbit = await initRabbitMQ();
-      const queueName = "notifications";
-      await rabbit.createQueue(queueName);
-      await rabbit.consumeMessages(queueName, async (msg) => {
-        // Here you would process the notification event
-        // For demo, just log it
-        // eslint-disable-next-line no-console
-        console.log("[RabbitMQ] Received message:", msg);
-      });
-      // eslint-disable-next-line no-console
-      console.log(`[RabbitMQ] Listening for messages on queue '${queueName}'`);
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("[RabbitMQ] Error initializing RabbitMQ:", err);
-    }
-  })();
-  // --- End RabbitMQ Example ---
+  listenToQueueEvents();
 });
 
 // Global error handlers

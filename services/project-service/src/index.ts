@@ -1,4 +1,4 @@
-// auth-service entry point
+// project-service entry point
 
 import express from "express";
 import cors from "cors";
@@ -11,17 +11,15 @@ import {
   notFoundHandler,
   handleUncaughtException,
   handleUnhandledRejection,
-  initRabbitMQ,
 } from "@t3d/core-utils";
 
 // Import database connection
 import { connectDB } from "@t3d/db-models";
 
-// Import routes
-import authRoutes from "./routes/auth.route";
+import routes from "./routes";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3003;
 
 // Connect to database
 const initializeDatabase = async () => {
@@ -43,30 +41,8 @@ app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    status: "OK",
-    service: "auth-service",
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-  });
-});
-
-// API routes
-app.use("/auth", authRoutes);
-
-// Root endpoint
-app.get("/", (req, res) => {
-  res.json({
-    message: "Auth Service API",
-    version: "1.0.0",
-    endpoints: {
-      health: "/health",
-      auth: "/auth",
-    },
-  });
-});
+// Routes
+routes(app);
 
 // 404 handler
 app.use("*", notFoundHandler);
@@ -80,32 +56,9 @@ const startServer = async () => {
 
   app.listen(PORT, () => {
     // eslint-disable-next-line no-console
-    console.log(`🚀 Auth service listening on port ${PORT}`);
+    console.log(`🚀 Project service listening on port ${PORT}`);
     // eslint-disable-next-line no-console
-    console.log(`📊 Health check: http://localhost:${PORT}/health`);
-
-    // --- RabbitMQ Usage Example ---
-    // This demonstrates connecting, creating a queue, and consuming messages
-    // You can move this to a dedicated worker or service as needed
-    (async () => {
-      try {
-        const rabbit = await initRabbitMQ();
-        const queueName = "auth-events";
-        await rabbit.createQueue(queueName);
-        await rabbit.consumeMessages(queueName, async (msg) => {
-          // Here you would process the auth event
-          // For demo, just log it
-          // eslint-disable-next-line no-console
-          console.log("[RabbitMQ] Received message:", msg);
-        });
-        // eslint-disable-next-line no-console
-        console.log(`[RabbitMQ] Listening for messages on queue '${queueName}'`);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error("[RabbitMQ] Error initializing RabbitMQ:", err);
-      }
-    })();
-    // --- End RabbitMQ Example ---
+    console.log(`📊 Health check: http://localhost:${PORT}/api/health/basic-health-check`);
   });
 };
 
