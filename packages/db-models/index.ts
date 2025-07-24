@@ -13,3 +13,9 @@ export * from "./notification.model";
 
 // Database connection utilities
 export * from "./connection";
+
+// Project models
+export * from "./project.model";
+
+// Structure models
+export * from "./structure.model";

@@ -3,7 +3,6 @@ import { validateRequest } from "@t3d/core-utils";
 
 // Base schemas (reused from core-utils)
 const emailSchema = z
-  .string()
   .email("Invalid email format")
   .min(1, "Email is required");
 
