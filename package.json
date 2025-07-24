@@ -10,14 +10,14 @@
     "dev:user": "npm run dev --workspace=@t3d/user-service",
     "dev:auth": "npm run dev --workspace=@t3d/auth-service",
     "dev:notification": "npm run dev --workspace=@t3d/notification-service",
-    "dev:project": "npm run dev --workspace=@t3d/project-service",
+    "dev:sample": "npm run dev --workspace=@t3d/sample-service",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:user": "jest --selectProjects user-service",
     "test:auth": "jest --selectProjects auth-service",
     "test:notification": "jest --selectProjects notification-service",
-    "test:project": "jest --selectProjects project-service",
+    "test:sample": "jest --selectProjects sample-service",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "type-check": "tsc --noEmit",
@@ -59,6 +59,7 @@
     "typescript": "^5.2.0"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.0.0",
     "@opentelemetry/exporter-jaeger": "1.30.1",
     "@opentelemetry/exporter-trace-otlp-http": "^0.202.0",
     "@opentelemetry/instrumentation": "^0.51.0",
@@ -81,6 +82,6 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0",
-    "zod": "^3.25.67"
+    "zod": "^4.0.5"
   }
 }

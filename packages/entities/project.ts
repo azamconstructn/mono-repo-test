@@ -11,7 +11,7 @@ export interface ProjectValue {
   value: number;
 }
 
-export default interface Project {
+export interface Project {
   name: string;
   // nickName?: string;
   // type: string;

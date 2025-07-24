@@ -1,6 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { Express, Request, Response } from "express";
+import { OpenAPIRegistry, OpenApiGeneratorV3 } from '@asteasolutions/zod-to-openapi';
 
 export interface SwaggerOptions {
   title?: string;
@@ -191,4 +192,18 @@ export const swaggerAnnotations = {
    *           type: string
    *           format: date-time
    */
+};
+
+// import { Express } from 'express';
+// import swaggerUi from 'swagger-ui-express';
+// import { registerUserDocs } from './user.docs';
+
+export const registry = new OpenAPIRegistry();
+
+export const setupSwagger = (app: Express) => {
+  const openApiSpec = new OpenApiGeneratorV3(registry.definitions).generateDocument({
+    openapi: '3.0.0',
+    info: { title: 'Track3D API', version: '1.0.0' },
+  });
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
 };

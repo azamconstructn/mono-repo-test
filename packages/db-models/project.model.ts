@@ -1,5 +1,4 @@
 import { Document, Schema, model, Query, SchemaTypes } from "mongoose";
-import {} from "../entities/project";
  
 type status = "Draft" | "PendingApproval" | "Approved" | "Rejected";
 
