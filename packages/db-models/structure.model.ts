@@ -1,5 +1,5 @@
 import { Document, Schema, model, Query, SchemaTypes } from 'mongoose';
-import { Design, DesignSchema } from './design';
+import { Design, DesignSchema } from './design.model';
 import { Location, LocationSchema } from './location';
 
 //  Progress Snapshot Interface

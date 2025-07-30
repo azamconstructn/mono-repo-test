@@ -33,7 +33,6 @@ export const validateRequest = (requestSchema: RequestSchema) => {
     try {
       const validatedData: Record<string, any> = {};
 
-      // validatedData.body = body.parse(req.body);
       if (requestSchema.body) {
         validatedData.body = requestSchema.body.parse(req.body);
       }
