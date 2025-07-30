@@ -143,8 +143,13 @@ const addMultipleStructures = async (projectId: string, parent: string, prefix: 
     return result;
 }
 
+const rearrangeWbsIds = async (newParent: string, structureId: string, wbsId: number) => {
+    
+}
+
 export const structureV1Service = {
     getStructureHierarchy,
     // addStructure,
-    addMultipleStructures
+    addMultipleStructures,
+    rearrangeWbsIds,
 }

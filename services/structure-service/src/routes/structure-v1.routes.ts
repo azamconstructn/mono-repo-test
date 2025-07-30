@@ -17,6 +17,14 @@ export default function structureV1Routes() {
         structureV1Controller.addMultipleStructures
     )
 
+    const rearrangeWbsIdsValidator = structureV1Validator.rearrangewbsids();
+
+    router.route("/:structureId/rearrangewbsids").put(
+        validateRequest(rearrangeWbsIdsValidator.request),
+        validateResponse(rearrangeWbsIdsValidator.response),
+        structureV1Controller.rearrangeWbsIds
+    )
+
     return router;
 
 }
