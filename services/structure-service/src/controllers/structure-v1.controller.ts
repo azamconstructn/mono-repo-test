@@ -10,31 +10,27 @@ export const structureV1Controller = {
     }),
 
     addMultipleStructures: asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
-        const projectId = req.params.projectId;
+        const { projectId } = req.params;
         const { parent, prefix, count, wbs, type, isExterior } = req.body;
 
-        // Call the service to add multiple structures
         const result = await structureV1Service.addMultipleStructures(projectId, parent, prefix, count, wbs, type, isExterior);
 
         return res.status(200).json({
             success: true,
-            result
+            result: result
         });
     }),
 
     rearrangeWbsIds: asyncHandler( async (req: Request, res: Response, next: NextFunction) => {
         const projectId = req.params.projectId;
-        const newParent = req.params.structureId;
+        let newParent = req.params.structureId;
         let updateWbs = Object.entries(req.body);
         let structureId = updateWbs[0][0];
-        let wbsId = updateWbs[0][1] as number;
+        let newWbsId = updateWbs[0][1] as number;
 
-        const result = await structureV1Service.rearrangeWbsIds(newParent, structureId, wbsId);
+        const result = await structureV1Service.rearrangeWbsIds(newParent, structureId, newWbsId);
 
-        return res.status(200).json({
-            success: true,
-            message: "Successfully updated wbs",
-        });
+        return res.status(200).json(result);
     }),
 
 }

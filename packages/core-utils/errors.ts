@@ -204,7 +204,10 @@ export const globalErrorHandler = (
 
   res
     .status((errorResponse as { statusCode: number }).statusCode)
-    .json(errorResponse);
+    .json({
+      success: false,
+      message: errorResponse.error,
+    });
 };
 
 // Not found handler middleware

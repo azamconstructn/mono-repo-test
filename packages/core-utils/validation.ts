@@ -66,11 +66,18 @@ export const validateRequest = (requestSchema: RequestSchema) => {
 
 // Response validation middleware
 export const validateResponse = (schema: z.ZodSchema) => {
+  // Merge the schema with 'success' (boolean) and 'message' (string)
+  const responseSchema = z.object({
+    success: z.boolean(),
+    message: z.string().optional(),
+    ...((schema as z.ZodObject<any>).shape),
+  });
+
   return (req: Request, res: Response, next: NextFunction) => {
     const originalJson = res.json;
     res.json = function (data: any) {
       try {
-        const validatedData = schema.parse(data);
+        const validatedData = responseSchema.parse(data);
         return originalJson.call(this, validatedData);
       } catch (error) {
         // Restore the original res.json to avoid recursion
