@@ -80,12 +80,12 @@ export interface Structure extends Document {
   isExterior: boolean;
   fm: number;
   project: string;
-  parent?: Schema.Types.String | null;
-  children: [Schema.Types.String];
+  parent?: string | null;
+  children: [string];
   location?: Location;
   utm?: string;
   designs?: Design[];
-  wbs?: number;
+  wbs: number;
   coordinates?: Coordinates;
   metaDetails?: Object;
   isDeleted: boolean;
@@ -148,6 +148,8 @@ const StructureSchema = new Schema<Structure>(
     designs: [DesignSchema],
     wbs: {
       type: Schema.Types.Number,
+      required: true,
+      default: 1,
     },
     metaDetails: Object,
     isDeleted: {
