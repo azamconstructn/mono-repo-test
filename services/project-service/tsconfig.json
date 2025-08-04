@@ -15,7 +15,7 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "../../packages/core-utils/swagger-helper.ts", "../../packages/core-utils/zod-with-openai.ts"],
   "exclude": ["node_modules", "dist"],
   "references": [
     { "path": "../../packages/core-utils" },
