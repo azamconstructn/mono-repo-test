@@ -1,97 +1,55 @@
-import { Document, Schema, model, SchemaTypes } from "mongoose";
-import { UserRole, UserRoleSchema } from "./user-role";
-import { Address, AddressSchema, Contact, ContactSchema } from "./address";
-import { Location, LocationSchema } from "./location";
-import { UtmLocation, UtmLocationSchema } from "./utmLocation";
+import { Schema, model, Document } from "mongoose";
+import { ProjectDetails } from "../entities/projectDetails";
 
-// Types reused from project.model.ts
-export type measurement = "US" | "Metric";
-export type status = "Draft" | "PendingApproval" | "Approved" | "Rejected";
-type metric = "$" | "SF";
+// Extend the ProjectDetails interface for Mongoose
+interface ProjectDetailsDocument extends ProjectDetails, Document { }
 
-export interface ProjectValue extends Document {
-  metric: metric;
-  value: number;
-}
-
-const ProjectValueSchema = new Schema<ProjectValue>(
+// Define the schema
+const ProjectDetailsSchema = new Schema<ProjectDetailsDocument>(
   {
-    metric: {
-      type: String,
-      enum: ["$", "SF"],
-      default: "$",
+    project: { type: String, ref: "Project", required: true },
+    description: { type: String },
+    contact: {
+      name: { type: String },
+      phone: { type: String },
+      email: { type: String },
     },
-    value: {
-      type: Number,
+    address: { type: Schema.Types.Mixed }, // Flexible key-value pairs
+    email: { type: String },
+    utm: {
+      easting: { type: Number },
+      northing: { type: Number },
+      zone: { type: String },
+    },
+    coverPhoto: { type: String },
+    logo: { type: String },
+    dashboardURL: { type: String },
+    reportURL: { type: String },
+    reportLocation: { type: String },
+    projectIntend: { type: String },
+    startDate: { type: Date },
+    mlOps: { type: Boolean },
+    isPursuitProject: { type: Boolean },
+    projectValue: {
+      metric: { type: String },
+      value: { type: Number },
     },
   },
-  { _id: false }
+  {
+    timestamps: true,
+    toJSON: { getters: true, virtuals: true },
+    id: false,
+  }
 );
-
-export interface ProjectDetails extends Document {
-    project: string;
-    nickName?: string;
-    type: string;
-    measurement: measurement;
-    referenceId?: string;
-    description?: string;
-    email?: string;
-    contact?: Contact;
-    location?: Location;
-    utm?: UtmLocation;
-    //   snapshotCount?: number;
-    //   structureCount?: number;
-    //   latestSnapshotDate?: Date;
-    projectValue?: ProjectValue;
-    approval_At?: Date;
-    users?: UserRole[];
-    address?: Address;
-    logo?: string;
-    metaDetails?: object;
-}
-
-export const ProjectDetailsSchema = new Schema<ProjectDetails>(
-    {
-        project: {
-            type: SchemaTypes.String, 
-            required: true, 
-            ref: "Project"
-        },
-        nickName: { type: String },
-        type: { type: String, required: true },
-        measurement: {
-            type: String,
-            enum: ["US", "Metric"],
-            default: "US",
-            required: true,
-        },
-        referenceId: { type: String },
-        description: { type: String },
-        email: { type: String },
-        contact: { type: ContactSchema },
-        location: { type: LocationSchema },
-        utm: { type: UtmLocationSchema },
-        // snapshotCount: { type: Number },
-        // structureCount: { type: Number },
-        // latestSnapshotDate: { type: Date },
-        projectValue: { type: ProjectValueSchema },
-        approval_At: { type: Date, default: null },
-        users: [UserRoleSchema],
-        address: AddressSchema,
-        logo: String,
-        metaDetails: Object,
-    },
-    {
-        _id: false,
-        toJSON: { getters: true, virtuals: true },
-    }
+ProjectDetailsSchema.pre<ProjectDetailsDocument>("save", async function (next) {
+  const now = String(Date.now());
+  const middlePos = Math.ceil(now.length / 2);
+  let prefix = "PRJD";
+  if (!this._id) this._id = `${prefix}${now.substring(middlePos)}`;
+  next();
+});
+// Create and export the model
+export const ProjectDetailsModel = model<ProjectDetailsDocument>(
+  "ProjectDetails",
+  ProjectDetailsSchema
 );
-
-
-export type ProjectType = "Residential" | "Pipeline" | "Road" | "Solar" | "Building" | "Commercial" | "Healthcare" | "Infrastructure" | "Industrial" | "Data Center" | "Airport";
-
-export const ProjectTypes = [
-  "Residential", "Pipeline", "Road", "Solar", "Building", "Commercial", "Healthcare", "Infrastructure", "Industrial", "Data Center", "Airport"
-];
-
-export const ProjectDetailsModel = model<ProjectDetails>("ProjectDetails", ProjectDetailsSchema);

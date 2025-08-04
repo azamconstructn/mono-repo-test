@@ -1,0 +1,44 @@
+import { AttachmentN } from "./attachmentn";
+export interface Note {
+    title: string;
+    defaultTitle?: string;
+    description?: string;
+    type: string;
+    status: string;
+    priority: string;
+    assignees?: string[];
+    addressedBy?: string;
+    owner: string;
+    project: string;
+    structure: string;
+    snapshot?: string;
+    context?: object;
+    screenshot?: string;
+    attachments?: AttachmentN[];
+    metadata?: object;
+    integration?: object;
+    startDate?: Date;
+    dueDate?: Date;
+    completedDate?: Date;
+    sequenceNumber: number;
+    progress: number;
+    tags?: string[];
+    config?: {
+        type: string;
+        status: string;
+        priority: string;
+        tags: string[];
+    };
+    noteType: "Issue" | "Task" | "VoiceNote";
+    voiceNoteAttachmentId: string;
+    capture?: string;
+    voiceNoteStatus?: string;
+    transcript?: string;
+    design?: string;
+    hasGlobal?: boolean;
+    hasNormalized?: boolean;
+    tmStatus?: "notUpdated" | "updated";
+    rawCaptureData?: object;
+    isActive: boolean;
+    isDeleted: boolean;
+}
