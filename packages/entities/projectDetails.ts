@@ -1,24 +1,32 @@
-import { ProjectValue, Status, Measurement } from "./project";
+import { Status, Measurement } from "./project";
 import { Address, Contact } from "./address";
 import { Location } from "./location";
 import { UtmLocation } from "./utmLocation";
 import { UserRole } from "./user-role";
 
-export interface ProjectDetails {
-  project: string;
-  nickName?: string;
-  type: string;
-  measurement: Measurement;
-  referenceId?: string;
+export type Metric = "$" | "SF";
+
+export interface ProjectValue {
+  metric: Metric;
+  value: number;
+}
+export interface ProjectDetails extends Document {
+  project: String;
   description?: string;
+  contact?: { name?: string; phone?: string; email?: string };
+  address?: Record<string, string>;
   email?: string;
-  contact?: Contact;
-  location?: Location;
-  utm?: UtmLocation;
-  projectValue?: ProjectValue;
-  approval_At?: Date;
-  users?: UserRole[];
-  address?: Address;
+  utm?: { easting?: number; northing?: number; zone?: string };
+  coverPhoto?: string;
   logo?: string;
-  metaDetails?: object;
+  // meta fields
+  dashboardURL?: string;
+  reportURL?: string;
+  reportLocation?: string;
+  projectIntend?: string;           // enum if available
+  startDate?: Date;
+  mlOps?: boolean;
+  isPursuitProject?: boolean;
+  projectValue?: { metric: string; value: number };
+
 }

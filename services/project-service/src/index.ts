@@ -15,7 +15,7 @@ import {
 } from "@t3d/core-utils";
 
 // Import database connection
-import { connectDB } from "../../../packages/db-models";
+import { connectDB } from "@t3d/db-models";
 
 import routes from "./routes";
 // import { setupSwagger } from "./swagger";
