@@ -10,9 +10,7 @@ export const connectDB = async (): Promise<void> => {
   }
 
   try {
-    const mongoURI =
-      "mongodb+srv://dev-admin:C0nstructN@constructnapidev.ehhll19.mongodb.net/?retryWrites=true&w=majority";
-
+    const mongoURI =""
     await mongoose.connect(mongoURI, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 50000,
