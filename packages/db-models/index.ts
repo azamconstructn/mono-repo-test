@@ -12,11 +12,4 @@ export * from "./auth.model";
 // Database connection utilities
 export * from "./connection";
 
-// Project models
-export * from "./project.model";
 
-export * from "./design.model";
-
-
-// Structure models
-export * from "./structure.model";

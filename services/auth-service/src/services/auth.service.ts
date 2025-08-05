@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { User, RefreshToken } from "@t3d/db-models";
+import { User, RefreshToken, UserModel } from "@t3d/db-models";
 import { LoginDto, RegisterDto } from "../validation";
 import {
   AuthenticationError,
@@ -28,7 +28,7 @@ export const register = async (
   userData: RegisterDto,
 ): Promise<AuthResponse> => {
   // Check if user already exists
-  const existingUser = await User.findOne({ email: userData.email });
+  const existingUser = await UserModel.findOne({ email: userData.email });
   if (existingUser) {
     throw new ConflictError("User with this email already exists");
   }
@@ -38,7 +38,7 @@ export const register = async (
   const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
 
   // Create user
-  const user = new User({
+  const user = new UserModel({
     firstName: userData.name.split(" ")[0] || userData.name,
     lastName: userData.name.split(" ").slice(1).join(" ") || "",
     username: userData.email.split("@")[0], // Simple username generation
@@ -80,7 +80,7 @@ export const register = async (
 
 export const login = async (credentials: LoginDto): Promise<AuthResponse> => {
   // Find user by email
-  const user = await User.findOne({ email: credentials.email });
+  const user = await UserModel.findOne({ email: credentials.email });
   if (!user) {
     throw new AuthenticationError("Invalid email or password");
   }
@@ -131,7 +131,7 @@ export const refreshToken = async (
     }
 
     // Get user
-    const user = await User.findById(decoded.userId);
+    const user = await UserModel.findById(decoded.userId);
     if (!user) {
       throw new NotFoundError("User not found");
     }
