@@ -1,6 +1,5 @@
 import { Router } from "express";
 import {
-  validateAuthRequest,
   loginSchema,
   registerSchema,
   refreshTokenSchema,
@@ -16,7 +15,6 @@ const router = Router();
 // Register endpoint
 router.post(
   "/register",
-  validateAuthRequest(registerSchema),
   asyncHandler(async (req, res) => {
     const result = await authService.register(req.validatedData as RegisterDto);
     res.status(201).json({
@@ -29,7 +27,6 @@ router.post(
 // Login endpoint
 router.post(
   "/login",
-  validateAuthRequest(loginSchema),
   asyncHandler(async (req, res) => {
     const result = await authService.login(req.validatedData as LoginDto);
     res.status(200).json({
@@ -42,7 +39,6 @@ router.post(
 // Refresh token endpoint
 router.post(
   "/refresh",
-  validateAuthRequest(refreshTokenSchema),
   asyncHandler(async (req, res) => {
     const result = await authService.refreshToken(
       (req.validatedData as RefreshTokenDto).refreshToken
@@ -57,7 +53,6 @@ router.post(
 // Logout endpoint
 router.post(
   "/logout",
-  validateAuthRequest(refreshTokenSchema),
   asyncHandler(async (req, res) => {
     await authService.logout((req.validatedData as RefreshTokenDto).refreshToken);
     res.status(200).json({
