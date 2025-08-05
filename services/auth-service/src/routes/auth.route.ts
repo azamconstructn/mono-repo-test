@@ -12,7 +12,7 @@ import * as authService from "../services/auth.service";
 
 const router = Router();
 
-// Register endpoint
+// Register endpoint  
 router.post(
   "/register",
   asyncHandler(async (req, res) => {

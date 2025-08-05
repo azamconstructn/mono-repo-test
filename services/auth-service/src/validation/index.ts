@@ -40,8 +40,8 @@ export const refreshTokenSchema = z.object({
 });
 
 // Validation middleware wrapper
-export const validateAuthRequest = (schema: z.ZodSchema) =>
-  validateRequest(schema);
+// export const validateAuthRequest = (schema: z.ZodSchema) =>
+//   validateRequest(schema);
 
 // Type exports
 export type LoginDto = z.infer<typeof loginSchema>;

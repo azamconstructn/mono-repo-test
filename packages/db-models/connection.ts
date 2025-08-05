@@ -10,7 +10,7 @@ export const connectDB = async (): Promise<void> => {
   }
 
   try {
-    const mongoURI =""
+    const mongoURI = "mongodb://localhost:27017/test"; // Replace with your MongoDB URI
     await mongoose.connect(mongoURI, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 50000,
