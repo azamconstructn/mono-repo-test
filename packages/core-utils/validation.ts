@@ -42,7 +42,7 @@ export const validateRequest = (requestSchema: RequestSchema) => {
       if (requestSchema.query) {
         validatedData.query = requestSchema.query.parse(req.query);
       }
-      
+
       req.validatedData = validatedData;
       next();
     } catch (error) {
@@ -56,9 +56,9 @@ export const validateRequest = (requestSchema: RequestSchema) => {
           "VALIDATION_ERROR",
         );
         (validationError as any).details = { errors: validationErrors };
-        return res.status(400).json({ error: "Validation failed", details: validationErrors });
+        res.status(400).json({ error: "Validation failed", details: validationErrors });
       } else {
-        return res.status(400).json({ error: "Unknown validation error" });
+        res.status(400).json({ error: "Unknown validation error" });
       }
     }
   };

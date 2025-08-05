@@ -10,7 +10,7 @@ export interface ProjectValue {
   metric: Metric;
   value: number;
 }
-export interface ProjectDetails extends Document {
+export interface ProjectDetails {
   project: String;
   description?: string;
   contact?: { name?: string; phone?: string; email?: string };

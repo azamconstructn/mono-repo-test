@@ -4,20 +4,14 @@
   "private": true,
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node dist/index.js",
     "test": "jest"
   },
   "dependencies": {
-    "@types/aws-sdk": "^2.7.0",
-    "aws-sdk": "^2.1104.0",
-    "lodash": "^4.17.21",
-    "multer": "^1.4.4",
-    "multer-s3": "^2.10.0"
-  },
-  "devDependencies": {
-    "@types/multer": "^1.4.7",
-    "@types/multer-s3": "^2.7.12"
+    "@t3d/core-utils": "../../packages/core-utils",
+    "@t3d/db-models": "../../packages/db-models",
+    "@t3d/entities": "../../packages/entities"
   }
 }

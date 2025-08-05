@@ -5,7 +5,11 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -b",
     "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@t3d/core-utils": "../core-utils",
+    "@t3d/entities": "../entities"
   }
 }

@@ -11,12 +11,12 @@ export const connectDB = async (): Promise<void> => {
 
   try {
     const mongoURI =
-      process.env.MONGODB_URI || "mongodb://localhost:27017/t3d_api";
+      "mongodb+srv://dev-admin:C0nstructN@constructnapidev.ehhll19.mongodb.net/?retryWrites=true&w=majority";
 
     await mongoose.connect(mongoURI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 50000,
+      socketTimeoutMS: 450000,
       bufferCommands: false,
     });
 

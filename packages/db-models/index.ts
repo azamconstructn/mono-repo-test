@@ -9,8 +9,6 @@ export * from "./user.model";
 export * from "./auth.model";
 
 // Notification models
-export * from "./notification.model";
-
 // Database connection utilities
 export * from "./connection";
 

@@ -1,7 +1,6 @@
 import { Document, Schema, model, Query, SchemaTypes } from "mongoose";
 import bcrypt from "bcryptjs";
 import { Contact, ContactSchema, Address, AddressSchema } from "./address";
-import { Company, CompanyModel } from "./company";
 
 export enum loginType {
   constructn = "constructn-oauth",
@@ -107,42 +106,9 @@ UserSchema.virtual("fullName").get(function (this: User) {
   return `${this.firstName} ${this.lastName}`;
 });
 
-UserSchema.virtual("age").get(function (this: User) {
-  if (this.dob) {
-    const today = new Date();
-    const birthDate = new Date(this.dob);
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  }
-});
 
-UserSchema.virtual("canResendVerification").get(function (this: User) {
-  const now: number = new Date().getTime();
-  const twoHoursAgo: Date = new Date(now - 2 * 60 * 60 * 1000);
-  if (this.verificationTimestamps?.length > 0) {
-    return (
-      this.verificationTimestamps.filter(
-        (timestamp) => timestamp.getTime() > twoHoursAgo.getTime()
-      ).length < 3
-    );
-  } else return true;
-});
 
-UserSchema.virtual("canResetPassword").get(function (this: User) {
-  const now: number = new Date().getTime();
-  const twentyFourHoursAgo: Date = new Date(now - 24 * 60 * 60 * 1000);
-  if (this.resetPasswordTimestamps?.length > 0) {
-    return (
-      this.resetPasswordTimestamps.filter(
-        (timestamp) => timestamp.getTime() > twentyFourHoursAgo.getTime()
-      ).length < 3
-    );
-  } else return true;
-});
+
 
 UserSchema.methods.comparePassword = function (password: string): boolean {
   return bcrypt.compareSync(password, this.password);
@@ -163,36 +129,8 @@ UserSchema.pre<Query<User, User>>(
   }
 );
 
-UserSchema.post(
-  /^(find|findOne|updateOne|findOneAndUpdate)/,
-  async (doc: User | User[]) => {
-    if (!doc) return;
-    await populateCompany(doc);
-  }
-);
 
-async function populateCompany(doc: User | User[]) {
-  if (Array.isArray(doc)) {
-    await Promise.all(
-      doc.map(async (user) => {
-        if (!user?.email) {
-          let userDetails = await UserModel.findOne({ _id: user._id });
-          if (userDetails) user = userDetails;
-        }
-        const emailDomain = user.email.split("@")[1];
-        const company = await CompanyModel.findOne({ domain: emailDomain });
-        (user as User).company = company;
-      })
-    );
-  } else {
-    if (!doc?.email) {
-      let userDetails = await UserModel.findOne({ _id: doc._id });
-      if (userDetails) doc = userDetails;
-    }
-    const emailDomain = doc.email.split("@")[1];
-    const company: Company | null = await CompanyModel.findOne({ domain: emailDomain });
-    (doc as User).company = company;
-  }
-}
+
+
 
 export const UserModel = model<User>("User", UserSchema);

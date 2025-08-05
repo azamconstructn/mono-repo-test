@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020"],
@@ -15,12 +15,10 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"],
+  "include": ["**/*.ts"],     // ✅ only this package’s .ts files
+  "exclude": ["node_modules", "./dist"],
+   // 3️⃣  Only if this package *imports* another workspace lib:
   "references": [
-    { "path": "../../packages/core-utils" },
-    { "path": "../../packages/db-models" },
-    { "path": "../../packages/entities" },
-    { "path": "../../packages/middleware" } // Add references to other packages if this package imports them
+    { "path": "../core-utils" },    // example,
   ]
 }

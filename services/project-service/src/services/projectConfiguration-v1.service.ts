@@ -7,11 +7,11 @@ import { User, UserModel } from "@t3d/db-models/user.model";
 import { AssetCategoryModel } from "@t3d/db-models/assetCategory.model";
 
 import { ProjectConfigurationModel, ProjectConfigurationDocument } from "@t3d/db-models/project-configuration.model";
-import { InternalError, NotFoundError } from "packages/middleware/error";
+import { NotFoundError } from "@t3d/core-utils/errors";
 import { error } from "console";
 import { result } from "lodash";
 import { StructureModel } from "@t3d/db-models";
-import { UserEntityRoleModel } from "packages/db-models/userEntityRole.model";
+import { UserEntityRoleModel } from "@t3d/db-models/userEntityRole.model";
 
 const createNewConfig = async (
     req: Request
