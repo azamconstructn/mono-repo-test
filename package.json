@@ -13,7 +13,7 @@
     "dev:sample": "npm run dev --workspace=@t3d/sample-service",
     "dev:structure": "npm run dev --workspace=@t3d/structure-service",
     "dev:project": "npm run dev --workspace=@t3d/project-service",
-    "build:project": "npm run build -w @t3d/project-service --include-workspace-deps",
+    "build:project": "npm run build -w @t3d/auth-service --include-workspace-deps",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
