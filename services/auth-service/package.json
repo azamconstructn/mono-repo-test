@@ -10,8 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
-    "@t3d/core-utils": "workspace:*",
-    "@t3d/db-models": "workspace:*",
-    "@t3d/middleware": "workspace:*"
+    "@t3d/core-utils": "^1.0.0",
+    "@t3d/db-models": "^1.0.0",
+    "@t3d/middleware": "^1.0.0"
   }
 }
