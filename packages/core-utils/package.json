@@ -7,5 +7,19 @@
   "scripts": {
     "build": "tsc -b",
     "dev": "tsc --watch"
+  },
+  "exports": {
+    ".": "./dist/index.js",
+    "./logger": "./dist/logger.js",
+    "./tracing": "./dist/tracing.js",
+    "./rabbitmq": "./dist/rabbitmq.js",
+    "./metrics": "./dist/metrics.js",
+    "./utils": "./dist/utils.js",
+    "./errors": "./dist/errors.js",
+    "./validation": "./dist/validation.js",
+    "./auth": "./dist/auth.js",
+    "./swagger": "./dist/swagger.js",
+    "./swagger-helper": "./dist/swagger-helper.js",
+    "./zod-with-openai": "./dist/zod-with-openai.js"
   }
 }

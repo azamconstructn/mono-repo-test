@@ -18,7 +18,5 @@
   "include": ["**/*.ts"],     // ✅ only this package’s .ts files
   "exclude": ["node_modules", "./dist"],
    // 3️⃣  Only if this package *imports* another workspace lib:
-  "references": [
-    { "path": "../core-utils" },    // example,
-  ]
+  "references": []
 }

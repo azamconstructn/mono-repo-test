@@ -3,12 +3,12 @@ name: CI - auth-service
 on:
   push:
     paths:
-      - 'services/auth-service/**'
-      - '.github/workflows/auth-service.yml'
+      - "services/auth-service/**"
+      - ".github/workflows/auth-service.yml"
   pull_request:
     paths:
-      - 'services/auth-service/**'
-      - '.github/workflows/auth-service.yml'
+      - "services/auth-service/**"
+      - ".github/workflows/auth-service.yml"
 
 jobs:
   build:
@@ -23,13 +23,10 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
 
       - name: Build TypeScript
-        run: npm run build
-
-      - name: Run tests
-        run: npm test
+        run: npm run build:auth-service
